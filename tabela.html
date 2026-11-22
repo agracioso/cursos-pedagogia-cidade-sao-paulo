@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pedagogia EaD – Tabela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/estilo.css">
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<header class="band"><div class="wrap">
+  <h1>Todos os cursos localizados, lado a lado</h1>
+  <p class="lede">Pedagogia (licenciatura) em formato <b>semipresencial</b> ou anunciado como <b>EaD</b>, com polo a até 6 km dos CEPs 03167-030 (Mooca) e 04018-010 (Vila Mariana). Clique no cabeçalho de uma coluna para ordenar. Os filtros valem também para o mapa.</p>
+  <nav class="tabs" aria-label="Páginas">
+    <a href="index.html">Mapa</a>
+    <a href="tabela.html" aria-current="page">Tabela de cursos</a>
+  </nav>
+  <div class="filters" id="filters"></div>
+</div></header>
+<main class="band" style="padding-top:0"><div class="wrap">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center">
+    <button class="btn" id="copy" type="button">Copiar tabela filtrada (para colar no Excel)</button>
+    <span id="copyMsg" style="color:var(--muted);font-size:14px"></span>
+  </div>
+  <div class="tablewrap">
+    <table class="stack" id="tb">
+      <thead><tr>
+        <th><button data-k="ies">Instituição</button></th>
+        <th><button data-k="polo">Polo / bairro</button></th>
+        <th>Endereço</th>
+        <th><button data-k="dm">Mooca</button></th>
+        <th><button data-k="dv">V. Mariana</button></th>
+        <th><button data-k="formato">Formato</button></th>
+        <th>Turno</th>
+        <th><button data-k="preco">Mensalidade</button></th>
+        <th><button data-k="preco_cheio">Preço cheio</button></th>
+        <th><button data-k="semestre">Ingresso</button></th>
+        <th>Duração</th>
+        <th>Vagas</th>
+        <th>Avaliação MEC</th>
+        <th>Alertas</th>
+        <th>Fonte</th>
+      </tr></thead>
+      <tbody id="body"></tbody>
+    </table>
+  </div>
+
+  <section class="notes">
+    <h2>O que mudou na regra: licenciatura não pode mais ser 100% a distância</h2>
+    <p>O Decreto nº 12.456, de 19/05/2025 (novo marco regulatório da EaD), vedou a oferta de licenciaturas no formato a distância e criou o formato semipresencial. Além disso, a Resolução CNE/CP nº 4/2024 exige que ao menos metade da carga horária das licenciaturas seja presencial, exigência mantida pelo CNE na revisão de 2026. Na prática, "Pedagogia EAD" para quem ingressa agora significa ir ao polo ou campus com regularidade — no Mackenzie, por exemplo, são duas noites por semana. Por isso, ofertas anunciadas como "EaD" estão marcadas com alerta.</p>
+
+    <h2>Como os dados foram levantados</h2>
+    <ul>
+      <li><b>Ofertas e preços:</b> páginas públicas do portal EAD.com.br (grupo Quero Educação, o mesmo do Quero Bolsa), listagem "Pedagogia em São Paulo – SP" e páginas de cada instituição para a cidade, consultadas em 22/11/2026. As coordenadas dos polos são as publicadas pelo portal.</li>
+      <li><b>"Mensalidade"</b> é o valor com a bolsa/desconto anunciado pela plataforma para ingresso (em geral 2027.1); <b>"Preço cheio"</b> é o valor de tabela informado pela mesma plataforma. Descontos de plataforma costumam valer só para quem se matricula por ela e podem ser regressivos (diminuem ao longo do curso).</li>
+      <li><b>Acrescentados a partir de fontes oficiais:</b> Belas Artes (campus na própria Rua Dr. Álvaro Alvim), Unicesumar (polo Vila Mariana), Mackenzie (edital 2026.2) e Univesp (pública e gratuita, polo CEU Heliópolis). Ficaram de fora o curso semipresencial do São Camilo (página informa "sem previsão de novas turmas") e o polo Vila Mariana da Uninter (endereço atual não confirmado).</li>
+      <li><b>Distâncias:</b> em linha reta (fórmula de Haversine) a partir da geocodificação das ruas dos CEPs no OpenStreetMap. A distância real de deslocamento é maior.</li>
+      <li><b>Agrupamento:</b> polos do grupo Cruzeiro do Sul (Cruzeiro do Sul Virtual, UNICSUL, UNICID, Braz Cubas) que dividem o mesmo endereço e preço aparecem numa linha só.</li>
+    </ul>
+
+    <h2>Limitações que você precisa conhecer</h2>
+    <ul>
+      <li><b>Vagas:</b> as IES privadas não divulgam vagas por polo; o número autorizado é por curso, no e-MEC. Só Mackenzie e Univesp publicam vagas em edital.</li>
+      <li><b>Avaliação MEC:</b> não foi possível acessar o e-MEC nem as planilhas do Inep a partir do ambiente de pesquisa. A coluna só traz notas que encontrei em fonte identificável, e indica de onde vêm. Para as demais, consulte o curso no <a href="https://emec.mec.gov.br/" target="_blank" rel="noopener">e-MEC</a> e o <b>Conceito Enade das Licenciaturas 2025</b> (divulgado pelo Inep em maio de 2026), que é hoje o indicador mais recente e específico para Pedagogia.</li>
+      <li><b>Cobertura:</b> instituições que não anunciam no portal (como Uninove, Senac, Uniasselvi e Uninter) podem ter polos na região que não aparecem aqui.</li>
+      <li><b>"Turno: Virtual"</b> indica, no portal, aulas síncronas on-line; os encontros presenciais obrigatórios devem ser confirmados com o polo.</li>
+    </ul>
+  </section>
+</div></main>
+<footer class="band"><div class="wrap">Dados em <a href="dados/cursos.json">dados/cursos.json</a>. Levantamento de 22/11/2026; confirme sempre preço, formato e calendário diretamente com a instituição.</div></footer>
+<script src="assets/dados.js"></script>
+<script src="assets/comum.js"></script>
+<script>
+{
+const {brl,km,esc,filtrar,montarFiltros,ler}=window.PED;
+let sortK='dist',dir=1,cur=[],F=null;
+const val=(c,k)=>k==='dist'?window.PED.dist(c,F.ref):(c[k]==null?(['preco','preco_cheio'].includes(k)?Infinity:''):c[k]);
+function render(f){
+  F=f;cur=filtrar(window.CURSOS,f);
+  cur.sort((a,b)=>{const x=val(a,sortK),y=val(b,sortK);return (typeof x==='number'&&typeof y==='number'?x-y:String(x).localeCompare(String(y),'pt-BR'))*dir});
+  document.getElementById('body').innerHTML=cur.map(c=>{const sp=/semi/i.test(c.formato);return `<tr>
+  <td><b>${esc(c.ies)}</b></td>
+  <td>${esc(c.polo)}<div class="small">${esc(c.bairro)}</div></td>
+  <td>${esc(c.endereco||'—')}</td>
+  <td class="n">${km(c.dm)}</td><td class="n">${km(c.dv)}</td>
+  <td><span class="tag ${sp?'sp':'ead'}">${esc(c.formato)}</span></td>
+  <td>${esc(c.turnos.join(', ')||'—')}</td>
+  <td class="n"><b>${brl(c.preco)}</b>${c.desconto?`<div class="small">−${c.desconto}%</div>`:''}</td>
+  <td class="n">${brl(c.preco_cheio)}</td>
+  <td>${esc(c.semestre||'—')}</td>
+  <td>${esc(c.duracao||'—')}</td>
+  <td>${esc(c.vagas)}</td>
+  <td>${esc(c.mec)}</td>
+  <td>${c.alertas.map(a=>`<div class="alert">${esc(a)}</div>`).join('')}</td>
+  <td><a href="${esc(c.fonte)}" target="_blank" rel="noopener">${esc(c.fonte_nome)}</a></td></tr>`}).join('')||'<tr><td colspan="15">Nenhuma oferta com esses filtros.</td></tr>';
+  document.getElementById('count').innerHTML=`<b>${cur.length}</b> ofertas · ${new Set(cur.map(c=>c.ies)).size} instituições`;
+  document.querySelectorAll('thead button').forEach(b=>b.textContent=b.textContent.replace(/ [▲▼]$/,'')+(b.dataset.k===sortK?(dir>0?' ▲':' ▼'):''));
+}
+document.querySelector('thead').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const k=b.dataset.k;dir=(sortK===k)?-dir:1;sortK=k;render(F)});
+document.getElementById('copy').addEventListener('click',async()=>{
+  const H=['Instituição','Polo','Bairro','Endereço','Dist. Mooca (km)','Dist. V. Mariana (km)','Formato','Turno','Mensalidade (R$)','Preço cheio (R$)','Ingresso','Duração','Vagas','Avaliação MEC','Alertas','Fonte'];
+  const rows=cur.map(c=>[c.ies,c.polo,c.bairro,c.endereco,c.dm,c.dv,c.formato,c.turnos.join(', '),c.preco??'',c.preco_cheio??'',c.semestre,c.duracao,c.vagas,c.mec,c.alertas.join(' | '),c.fonte].map(v=>typeof v==='number'?String(v).replace('.',','):String(v).replace(/\t|\n/g,' ')).join('\t'));
+  try{await navigator.clipboard.writeText([H.join('\t'),...rows].join('\n'));document.getElementById('copyMsg').textContent=`${cur.length} linhas copiadas.`}
+  catch(e){document.getElementById('copyMsg').textContent='O navegador bloqueou a cópia. Use o arquivo dados/cursos.json do repositório.'}
+});
+montarFiltros(document.getElementById('filters'),ler(),render);
+}
+</script>
+</body>
+</html>

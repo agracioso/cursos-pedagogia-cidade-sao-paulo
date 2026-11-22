@@ -1,0 +1,89 @@
+/*
+VOICE: mesa de infografia de jornal — sóbrio, preciso, útil para decidir.
+IDEA: um guia de bairro impresso: dois pontos de partida (os CEPs) e anéis de distância.
+PICTURE: o mapa da cidade com os distritos desenhados e os polos como alfinetes.
+COLOUR and TYPE: fundo rosa-claro de jornal, tinta quase preta, petróleo (Mooca), bordô (Vila Mariana); Libre Franklin.
+LAYOUT: título-conclusão, abas, filtros numa faixa, mapa largo com lista lateral; tabela ordenável.
+*/
+:root{color-scheme:light dark;
+--bg:light-dark(#fff1ec,#1c1512);--paper:light-dark(#ffffff,#271e1a);--ink:light-dark(#1a1817,#f3ebe7);
+--muted:light-dark(#5d5551,#bcaea8);--line:light-dark(#e9cfc6,#3d302a);
+--teal:light-dark(#0d7680,#4fb3bc);--claret:light-dark(#990f3d,#e5658f);--warn:light-dark(#8a4b00,#f0b45c);
+--warnbg:light-dark(#fff4e0,#3a2a12)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Libre Franklin",system-ui,sans-serif;overflow-x:clip}
+a{color:var(--teal)}
+.band{padding:clamp(18px,3vw,36px) max(4vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+header.band{padding-bottom:10px}
+h1{font-weight:800;font-size:clamp(28px,3.6vw,44px);line-height:1.05;margin:0 0 8px;text-wrap:balance;max-width:24ch}
+.lede{color:var(--muted);max-width:70ch;margin:0}
+.lede b{color:var(--ink)}
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-top:18px;border-bottom:2px solid var(--ink)}
+nav.tabs a{padding:10px 18px;min-height:44px;display:inline-flex;align-items:center;text-decoration:none;color:var(--ink);font-weight:700;border:2px solid transparent;border-bottom:0;border-radius:6px 6px 0 0;margin-bottom:-2px}
+nav.tabs a[aria-current=page]{background:var(--paper);border-color:var(--ink);border-bottom:2px solid var(--paper)}
+nav.tabs a:not([aria-current]):hover{background:var(--paper)}
+.filters{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:end;background:var(--paper);border:1px solid var(--line);border-top:0;padding:14px 16px;border-radius:0 0 8px 8px}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
+.filters input,.filters select{font:inherit;font-size:16px;min-height:44px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.filters input[type=range]{padding:0;border:0;background:none;accent-color:var(--teal);min-width:180px}
+.filters .chk{flex-direction:row;align-items:center;gap:8px;min-height:44px;font-size:15px;color:var(--ink)}
+.filters .chk input{min-height:auto;width:20px;height:20px;accent-color:var(--teal)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.count{margin-left:auto;font-size:15px;color:var(--muted)}
+.count b{font-size:22px;color:var(--ink)}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:4px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;color:var(--muted);margin:10px 0 0}
+.mapgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;margin-top:16px}
+#map{height:min(72vh,680px);min-height:420px;border:1px solid var(--line);border-radius:8px;background:light-dark(#f7e3db,#241b17)}
+.list{height:min(72vh,680px);min-height:420px;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:8px}
+.list h2{font-size:16px;margin:0;padding:12px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--paper)}
+.item{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 14px;font:inherit;color:inherit;cursor:pointer;min-height:44px}
+.item:hover,.item.on{background:var(--bg)}
+.item .t{font-weight:700;line-height:1.25}
+.item .s{font-size:13px;color:var(--muted)}
+.item .p{float:right;font-weight:700;white-space:nowrap;margin-left:8px}
+.pop{font:14px/1.45 "Libre Franklin",system-ui,sans-serif;min-width:230px;max-width:300px}
+.pop h3{margin:0 0 2px;font-size:16px;line-height:1.2}
+.pop .sub{color:#5d5551;margin:0 0 8px}
+.pop dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0 0 8px}
+.pop dt{color:#5d5551}.pop dd{margin:0;font-weight:600}
+.alert{background:var(--warnbg);color:var(--warn);border-left:3px solid var(--warn);padding:6px 8px;font-size:13px;margin:6px 0;border-radius:0 4px 4px 0}
+.pop .alert{background:#fff4e0;color:#7a4300;border-color:#c77800}
+.leaflet-container{font-family:"Libre Franklin",system-ui,sans-serif}
+.origin-ic{width:30px;height:30px;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45);display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px}
+.lbl{background:rgba(255,255,255,.9);border:0;box-shadow:none;font-weight:700;font-size:12px;padding:1px 4px;color:#1a1817}
+.lbl::before{display:none}
+.tablewrap{margin-top:16px;background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+thead th{position:sticky;top:0;background:var(--paper);font-size:13px;white-space:nowrap;border-bottom:2px solid var(--ink)}
+thead th button{all:unset;cursor:pointer;font-weight:700;min-height:32px;display:inline-flex;align-items:center;gap:4px}
+thead th button:focus-visible{outline:3px solid var(--teal)}
+td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+td .small{font-size:12px;color:var(--muted)}
+tbody tr:hover{background:var(--bg)}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:1px 7px;border-radius:10px;white-space:nowrap}
+.tag.sp{background:light-dark(#d7eef0,#14363a);color:var(--teal)}
+.tag.ead{background:light-dark(#f7dbe4,#3e1424);color:var(--claret)}
+.notes{max-width:900px}
+.notes h2{font-size:24px;line-height:1.15;margin:28px 0 8px}
+.notes li{margin:4px 0}
+.btn{font:inherit;font-weight:700;min-height:44px;padding:8px 14px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:6px;cursor:pointer}
+footer{color:var(--muted);font-size:13px}
+@media(max-width:900px){.mapgrid{grid-template-columns:minmax(0,1fr)}.list{height:auto;max-height:420px}}
+@media(max-width:600px){
+ .count{margin-left:0;width:100%}
+ table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}
+ .stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:8.5em;text-align:start}
+ .stack td::before{content:attr(data-l);float:inline-start;width:8em;margin-inline-start:-8.5em;white-space:normal;color:var(--muted);font-size:12px}
+ .stack td:empty{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(min-width:601px){
+ #tb{min-width:1650px}
+ #tb td:nth-child(1){min-width:170px}#tb td:nth-child(2){min-width:160px}#tb td:nth-child(3){min-width:150px}
+ #tb td:nth-child(13){min-width:200px}#tb td:nth-child(14){min-width:300px}#tb td:nth-child(15){min-width:190px}
+}
