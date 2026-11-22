@@ -20,6 +20,8 @@ O site fica em `https://agracioso.github.io/cursos-pedagogia-cidade-sao-paulo/`.
 
 Levantamento em 22/11/2026. Fontes: páginas públicas do portal EAD.com.br / Quero Bolsa (ofertas, preços com desconto de plataforma e coordenadas dos polos) e páginas oficiais de Belas Artes, Unicesumar, Mackenzie (edital 2026.2) e Univesp. Distâncias em linha reta (Haversine) a partir da geocodificação dos CEPs no OpenStreetMap/Nominatim.
 
-**Limitações:** vagas por polo não são divulgadas pelas IES privadas; as notas do MEC não puderam ser verificadas no e-MEC e só aparecem quando há fonte identificável; preços mudam com frequência. Confirme tudo diretamente com a instituição antes de se matricular.
+**Qualidade:** Conceito Enade das Licenciaturas 2025 (Inep, planilha de 25/05/2026), área Pedagogia, curso EaD de cada instituição — extrato em `dados/enade_licenciaturas_2025_pedagogia.json`. O conceito é do curso, não do polo.
+
+**Limitações:** vagas por polo não são divulgadas pelas IES privadas; o vínculo marca→instituição é provável (Estácio, FAM) ou múltiplo (Anhanguera) em alguns casos; 19 ofertas de marcas menores ficaram sem nota; preços mudam com frequência. Confirme tudo diretamente com a instituição antes de se matricular.
 
 Mapa: [Leaflet](https://leafletjs.com) 1.9.4 (BSD-2, incluído em `assets/vendor/`) e OpenStreetMap.

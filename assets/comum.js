@@ -1,7 +1,7 @@
 /* Filtros e utilidades compartilhados entre as abas Mapa e Tabela */
 (function(){
-const KEY='pedagogia-sp-filtros-v1';
-const DEF={raio:3,ref:'qualquer',formato:'todos',precoMax:'',busca:'',soSemAlerta:false};
+const KEY='pedagogia-sp-filtros-v2';
+const DEF={raio:3,ref:'qualquer',formato:'todos',precoMax:'',busca:'',soSemAlerta:false,enade:'0'};
 function ler(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){return Object.assign({},DEF)}}
 function gravar(f){try{localStorage.setItem(KEY,JSON.stringify(f))}catch(e){}}
 const brl=v=>v==null?'—':(v===0?'Gratuito':v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}));
@@ -18,6 +18,7 @@ function filtrar(lista,f){
     if(f.formato==='ead'&&sp)return false;
     if(pm!=null&&!isNaN(pm)&&(c.preco==null||c.preco>pm))return false;
     if(f.soSemAlerta&&c.alertas.length)return false;
+    if(Number(f.enade)>0&&!(c.enade_min>=Number(f.enade)))return false;
     if(q&&!(c.ies+' '+c.polo+' '+c.bairro+' '+c.endereco).toLowerCase().includes(q))return false;
     return true});
 }
@@ -28,15 +29,17 @@ function montarFiltros(el,f,onChange){
     <select id="fRef"><option value="qualquer">Qualquer um dos CEPs</option><option value="mooca">03167-030 (Mooca)</option><option value="vm">04018-010 (Vila Mariana)</option></select></label>
   <label>Formato
     <select id="fFormato"><option value="todos">EaD e semipresencial</option><option value="semi">Só semipresencial</option><option value="ead">Só anunciados como EaD</option></select></label>
+  <label>Conceito Enade 2025
+    <select id="fEnade"><option value="0">Qualquer (inclui sem nota)</option><option value="3">3 ou mais</option><option value="4">4 ou mais</option></select></label>
   <label>Mensalidade máx. (R$)<input id="fPreco" type="number" inputmode="numeric" min="0" step="10" placeholder="sem limite" style="width:140px"></label>
   <label>Buscar IES ou bairro<input id="fBusca" type="search" placeholder="ex.: São Judas, Mooca" style="width:200px"></label>
   <label class="chk"><input id="fSem" type="checkbox"> Ocultar ofertas com alerta</label>
   <div class="count" id="count"></div>`;
   const $=id=>el.querySelector('#'+id);
-  $('fRaio').value=f.raio;$('fRef').value=f.ref;$('fFormato').value=f.formato;$('fPreco').value=f.precoMax;$('fBusca').value=f.busca;$('fSem').checked=f.soSemAlerta;
-  const upd=()=>{f.raio=Number($('fRaio').value);f.ref=$('fRef').value;f.formato=$('fFormato').value;f.precoMax=$('fPreco').value;f.busca=$('fBusca').value;f.soSemAlerta=$('fSem').checked;
+  $('fRaio').value=f.raio;$('fRef').value=f.ref;$('fFormato').value=f.formato;$('fPreco').value=f.precoMax;$('fBusca').value=f.busca;$('fSem').checked=f.soSemAlerta;$('fEnade').value=f.enade;
+  const upd=()=>{f.raio=Number($('fRaio').value);f.ref=$('fRef').value;f.formato=$('fFormato').value;f.precoMax=$('fPreco').value;f.busca=$('fBusca').value;f.soSemAlerta=$('fSem').checked;f.enade=$('fEnade').value;
     $('raioTxt').textContent=km(f.raio);gravar(f);onChange(f)};
-  ['fRaio','fRef','fFormato','fPreco','fBusca','fSem'].forEach(id=>$(id).addEventListener('input',upd));
+  ['fRaio','fRef','fFormato','fPreco','fBusca','fSem','fEnade'].forEach(id=>$(id).addEventListener('input',upd));
   upd();
 }
 window.PED={ler,gravar,brl,km,esc,dist,filtrar,montarFiltros};

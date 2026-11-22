@@ -39,7 +39,7 @@
         <th><button data-k="semestre">Ingresso</button></th>
         <th>Duração</th>
         <th>Vagas</th>
-        <th>Avaliação MEC</th>
+        <th><button data-k="enade_min">Conceito Enade 2025</button></th>
         <th>Alertas</th>
         <th>Fonte</th>
       </tr></thead>
@@ -62,8 +62,10 @@
 
     <h2>Limitações que você precisa conhecer</h2>
     <ul>
+      <li><b>Avaliação MEC (CC/CPC):</b> o e-MEC não pôde ser consultado; a coluna usa o Conceito Enade 2025, mais recente e específico para Pedagogia.</li>
       <li><b>Vagas:</b> as IES privadas não divulgam vagas por polo; o número autorizado é por curso, no e-MEC. Só Mackenzie e Univesp publicam vagas em edital.</li>
-      <li><b>Avaliação MEC:</b> não foi possível acessar o e-MEC nem as planilhas do Inep a partir do ambiente de pesquisa. A coluna só traz notas que encontrei em fonte identificável, e indica de onde vêm. Para as demais, consulte o curso no <a href="https://emec.mec.gov.br/" target="_blank" rel="noopener">e-MEC</a> e o <b>Conceito Enade das Licenciaturas 2025</b> (divulgado pelo Inep em maio de 2026), que é hoje o indicador mais recente e específico para Pedagogia.</li>
+      <li><b>Conceito Enade das Licenciaturas 2025:</b> planilha oficial do Inep (<a href="https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/indicadores-educacionais/indicadores-de-qualidade-da-educacao-superior/2025" target="_blank" rel="noopener">dados abertos, atualização de 25/05/2026</a>), área Pedagogia, curso na modalidade EaD de cada instituição (onde os polos estão vinculados). O conceito é do <b>curso</b>, não do polo: todos os polos de uma instituição herdam a mesma nota. Mede só a avaliação teórica (Prova Nacional Docente). "Proficientes" = concluintes no padrão 1 de proficiência ou acima.</li>
+      <li><b>Vínculo marca → instituição:</b> para São Judas, Anhembi, FMU, UNIP, Unisa, Metodista, Belas Artes, Mackenzie, Univesp, Unicesumar e marcas do grupo Cruzeiro do Sul a correspondência é direta. Para Estácio e FAM ela é <i>provável</i>; para Anhanguera, os polos vendem cursos de mais de uma instituição do grupo (Uniderp, Ampli, Unopar), por isso aparecem as três e o filtro usa a menor nota. 19 ofertas de marcas menores ficaram sem nota localizada.</li>
       <li><b>Cobertura:</b> instituições que não anunciam no portal (como Uninove, Senac, Uniasselvi e Uninter) podem ter polos na região que não aparecem aqui.</li>
       <li><b>"Turno: Virtual"</b> indica, no portal, aulas síncronas on-line; os encontros presenciais obrigatórios devem ser confirmados com o polo.</li>
     </ul>
@@ -76,7 +78,7 @@
 {
 const {brl,km,esc,filtrar,montarFiltros,ler}=window.PED;
 let sortK='dist',dir=1,cur=[],F=null;
-const val=(c,k)=>k==='dist'?window.PED.dist(c,F.ref):(c[k]==null?(['preco','preco_cheio'].includes(k)?Infinity:''):c[k]);
+const val=(c,k)=>k==='dist'?window.PED.dist(c,F.ref):(c[k]==null?(['preco','preco_cheio','enade_min'].includes(k)?Infinity:''):c[k]);
 function render(f){
   F=f;cur=filtrar(window.CURSOS,f);
   cur.sort((a,b)=>{const x=val(a,sortK),y=val(b,sortK);return (typeof x==='number'&&typeof y==='number'?x-y:String(x).localeCompare(String(y),'pt-BR'))*dir});
@@ -92,7 +94,7 @@ function render(f){
   <td>${esc(c.semestre||'—')}</td>
   <td>${esc(c.duracao||'—')}</td>
   <td>${esc(c.vagas)}</td>
-  <td>${esc(c.mec)}</td>
+  <td><b style="font-size:16px">${c.enade_min??'—'}</b><div class="small">${esc(c.mec.replace('Enade Licenciaturas 2025 — ',''))}</div></td>
   <td>${c.alertas.map(a=>`<div class="alert">${esc(a)}</div>`).join('')}</td>
   <td><a href="${esc(c.fonte)}" target="_blank" rel="noopener">${esc(c.fonte_nome)}</a></td></tr>`}).join('')||'<tr><td colspan="15">Nenhuma oferta com esses filtros.</td></tr>';
   document.getElementById('count').innerHTML=`<b>${cur.length}</b> ofertas · ${new Set(cur.map(c=>c.ies)).size} instituições`;
@@ -100,8 +102,8 @@ function render(f){
 }
 document.querySelector('thead').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const k=b.dataset.k;dir=(sortK===k)?-dir:1;sortK=k;render(F)});
 document.getElementById('copy').addEventListener('click',async()=>{
-  const H=['Instituição','Polo','Bairro','Endereço','Dist. Mooca (km)','Dist. V. Mariana (km)','Formato','Turno','Mensalidade (R$)','Preço cheio (R$)','Ingresso','Duração','Vagas','Avaliação MEC','Alertas','Fonte'];
-  const rows=cur.map(c=>[c.ies,c.polo,c.bairro,c.endereco,c.dm,c.dv,c.formato,c.turnos.join(', '),c.preco??'',c.preco_cheio??'',c.semestre,c.duracao,c.vagas,c.mec,c.alertas.join(' | '),c.fonte].map(v=>typeof v==='number'?String(v).replace('.',','):String(v).replace(/\t|\n/g,' ')).join('\t'));
+  const H=['Instituição','Polo','Bairro','Endereço','Dist. Mooca (km)','Dist. V. Mariana (km)','Formato','Turno','Mensalidade (R$)','Preço cheio (R$)','Ingresso','Duração','Vagas','Conceito Enade 2025 (menor do grupo)','Detalhe Enade','Alertas','Fonte'];
+  const rows=cur.map(c=>[c.ies,c.polo,c.bairro,c.endereco,c.dm,c.dv,c.formato,c.turnos.join(', '),c.preco??'',c.preco_cheio??'',c.semestre,c.duracao,c.vagas,c.enade_min??'',c.mec,c.alertas.join(' | '),c.fonte].map(v=>typeof v==='number'?String(v).replace('.',','):String(v).replace(/\t|\n/g,' ')).join('\t'));
   try{await navigator.clipboard.writeText([H.join('\t'),...rows].join('\n'));document.getElementById('copyMsg').textContent=`${cur.length} linhas copiadas.`}
   catch(e){document.getElementById('copyMsg').textContent='O navegador bloqueou a cópia. Use o arquivo dados/cursos.json do repositório.'}
 });

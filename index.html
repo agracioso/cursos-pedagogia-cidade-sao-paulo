@@ -19,9 +19,12 @@
   </nav>
   <div class="filters" id="filters"></div>
   <div class="legend">
-    <span><span class="dot" style="background:#0d7680"></span>Semipresencial</span>
-    <span><span class="dot" style="background:#fff;border:3px solid #990f3d"></span>Anunciado como 100% EaD (ver alerta)</span>
-    <span><span class="dot" style="background:#c77800"></span>Fonte oficial da IES / pública</span>
+    <span>Cor = Conceito Enade Licenciaturas 2025 (Pedagogia):</span>
+    <span><span class="dot" style="background:#1a7f37"></span>4–5</span>
+    <span><span class="dot" style="background:#c77800"></span>3</span>
+    <span><span class="dot" style="background:#b42318"></span>1–2</span>
+    <span><span class="dot" style="background:#8a817c"></span>sem nota localizada</span>
+    <span><span class="dot" style="background:#ccc;border:2px dashed #1a1817"></span>contorno tracejado = anunciado como 100% EaD</span>
     <span>Anéis tracejados: 1, 3 e 5 km de cada CEP</span>
   </div>
 </div></header>
@@ -41,6 +44,7 @@
 {
 const {brl,km,esc,filtrar,montarFiltros,ler}=window.PED;
 const TEAL='#0d7680',CLARET='#990f3d',OFF='#c77800';
+const ECOL=c=>c.enade_min==null?'#8a817c':c.enade_min>=4?'#1a7f37':c.enade_min===3?'#c77800':'#b42318';
 const map=L.map('map',{zoomSnap:0.5,scrollWheelZoom:true}).setView([-23.574,-46.618],13);
 const tiles=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
 L.geoJSON(window.DISTRITOS,{style:{color:'#9b8077',weight:1,fillColor:'#ffffff',fillOpacity:0.25},
@@ -63,7 +67,7 @@ function pop(c){
   <dt>Ingresso</dt><dd>${esc(c.semestre||'—')}</dd>
   <dt>Duração</dt><dd>${esc(c.duracao||'—')}</dd>
   <dt>Vagas</dt><dd>${esc(c.vagas)}</dd>
-  <dt>MEC</dt><dd>${esc(c.mec)}</dd>
+  <dt>Enade 2025</dt><dd>${esc(c.mec.replace('Enade Licenciaturas 2025 — ',''))}</dd>
   <dt>Distâncias</dt><dd>${km(c.dm)} da Mooca · ${km(c.dv)} da V. Mariana</dd></dl>${al}
   <a href="${esc(c.fonte)}" target="_blank" rel="noopener">Fonte: ${esc(c.fonte_nome)}</a></div>`;
 }
@@ -76,14 +80,14 @@ function draw(f){
     const k=c.lat.toFixed(4)+','+c.lng.toFixed(4);const n=seen[k]=(seen[k]||0)+1;
     const ang=n*2.1,off=n>1?0.00018*Math.sqrt(n):0;
     const ll=[c.lat+off*Math.sin(ang),c.lng+off*Math.cos(ang)];
-    const sp=/semi/i.test(c.formato),col=c.origem==='oficial'?OFF:(sp?TEAL:CLARET);
-    const m=L.circleMarker(ll,{radius:8,color:sp||c.origem==='oficial'?'#fff':CLARET,weight:sp||c.origem==='oficial'?2:3,fillColor:sp||c.origem==='oficial'?col:'#fff',fillOpacity:1})
+    const sp=/semi/i.test(c.formato),col=ECOL(c);
+    const m=L.circleMarker(ll,{radius:sp?8:7,color:sp?'#fff':'#1a1817',weight:sp?2:3,dashArray:sp?null:'2 3',fillColor:col,fillOpacity:1})
       .bindPopup(pop(c),{maxWidth:320}).addTo(layer);
     m.on('popupopen',()=>sel(c.id));marks[c.id]=m;
   }
   document.getElementById('count').innerHTML=`<b>${L2.length}</b> ofertas · ${new Set(L2.map(c=>c.ies)).size} instituições`;
   document.getElementById('listTitle').textContent=`${L2.length} ofertas, da mais próxima à mais distante`;
-  document.getElementById('list').innerHTML=L2.map(c=>`<button class="item" data-id="${c.id}"><span class="p">${brl(c.preco)}</span><div class="t">${esc(c.ies)}</div><div class="s">${esc(c.polo)} · ${km(window.PED.dist(c,f.ref))} · ${esc(c.formato)}${c.alertas.length?' · <b style="color:var(--warn)">com alerta</b>':''}</div></button>`).join('')||'<p style="padding:14px">Nenhuma oferta com esses filtros. Aumente o raio.</p>';
+  document.getElementById('list').innerHTML=L2.map(c=>`<button class="item" data-id="${c.id}"><span class="p">${brl(c.preco)}</span><div class="t">${esc(c.ies)}</div><div class="s"><span class="dot" style="background:${ECOL(c)}"></span>Enade ${c.enade_min??'s/ nota'} · ${esc(c.polo)} · ${km(window.PED.dist(c,f.ref))} · ${esc(c.formato)}${c.alertas.length?' · <b style="color:var(--warn)">com alerta</b>':''}</div></button>`).join('')||'<p style="padding:14px">Nenhuma oferta com esses filtros. Aumente o raio.</p>';
 }
 function sel(id){document.querySelectorAll('.item').forEach(b=>b.classList.toggle('on',b.dataset.id==id));const b=document.querySelector(`.item[data-id="${id}"]`);if(b)b.scrollIntoView({block:'nearest'})}
 document.getElementById('list').addEventListener('click',e=>{const b=e.target.closest('.item');if(!b)return;const m=marks[b.dataset.id];if(m){map.setView(m.getLatLng(),Math.max(map.getZoom(),15));m.openPopup()}});
